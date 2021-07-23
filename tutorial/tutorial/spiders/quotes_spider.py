@@ -21,3 +21,21 @@ class QuotesSpider(scrapy.Spider):
             next_page = response.urljoin(next_page)
             yield scrapy.Request(next_page, callback=self.parse)
         
+class AuthorSpider(scrapy.Spider):
+    name = 'author'
+
+    start_urls = ['http://quotes.toscrape.com/']
+
+    def parse(self, response):
+        yield from response.follow_all(response.css('.author + a'), self.parse_author)
+        yield from response.follow_all(response.css('li.next a'), self)
+
+    def parse_author(self, response):
+        def extract_with_css(query):
+            return response.css(query).get(default='').strip()
+        
+        yield {
+            'name': extract_with_css('h3.author-title::text'),
+            'birthdate': extract_with_css('author-born-date::text'),
+            'bio': extract_with_css('.author-description::text'),
+        }
