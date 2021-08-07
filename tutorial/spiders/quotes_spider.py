@@ -13,6 +13,7 @@ class QuotesSpider(scrapy.Spider):
     ]
 
     def parse(self, response):
+        division_by_zero = 1 / 0
         for quote in response.css('div.quote'):
             yield {
                 #'text': quote.css('span.text::text').get(),
