@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  proxy:
+    container_name: 'tor-proxy'
+    image: 'pickapp/tor-proxy:latest'
+    ports:
+      - '9990:8888'
+    environment:
+      - IP_CHANGE_SECONDS=10
+    restart: always
