@@ -56,8 +56,8 @@ class UdemySpider(scrapy.Spider):
 
     name = 'udemy'
 
-    http_user = os.environ.get("UDEMY_USER_ID"),
-    http_pass = os.environ.get("UDEMY_USER_PASS"),
+    http_user = os.getenv("UDEMY_USER_ID")
+    http_pass = os.getenv("UDEMY_USER_PASS")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
