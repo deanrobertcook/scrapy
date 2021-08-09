@@ -9,7 +9,8 @@
 
 import os
 import sys
-print(f"Running args: {sys.argv} on process: {os.getpid()}")
+import logging
+
 import sentry_sdk
 sentry_sdk.init(
     "https://648145f35bda4495bc1d4bf4b58ec6f2@o947074.ingest.sentry.io/5896997",

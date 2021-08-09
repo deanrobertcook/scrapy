@@ -3,9 +3,15 @@ from scrapy import signals
 from urllib import parse
 import json
 import os
+import logging
+import sys
 
 class QuotesSpider(scrapy.Spider):
     name = 'quotes'
+
+    def __init__(self, **kwargs):
+        logging.info(f"Running args: {sys.argv} on process: {os.getpid()}")
+        super().__init__(**kwargs)
 
     start_urls = [
         'http://quotes.toscrape.com/page/1/',
@@ -13,7 +19,7 @@ class QuotesSpider(scrapy.Spider):
     ]
 
     def parse(self, response):
-        division_by_zero = 1 / 0
+        # division_by_zero = 1 / 0
         for quote in response.css('div.quote'):
             yield {
                 #'text': quote.css('span.text::text').get(),
