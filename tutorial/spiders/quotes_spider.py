@@ -10,7 +10,9 @@ class QuotesSpider(scrapy.Spider):
     name = 'quotes'
 
     def __init__(self, **kwargs):
-        logging.info(f"Running args: {sys.argv} on process: {os.getpid()}")
+        release = os.getenv('RELEASE_VERSION')
+        env = os.getenv('ENVIRONMENT')
+        logging.info(f"RELEASE: {release}, ENVIRONMENT: {env}")
         super().__init__(**kwargs)
 
     start_urls = [
