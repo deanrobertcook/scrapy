@@ -1,16 +1,9 @@
+list = ['a', 'b', 'c']
 
-class TestClass:
+i = 4
+res = list[i] if len(list) > i else None
 
-    def __init__(self, name):
-        self.name = name
+print(res)
+print(type(res))
 
-    def inst_method(self):
-        print(f"Here we have the instance method on {self.name}")
-
-    @classmethod
-    def some_method(cls):
-        inst = cls("test")
-        inst.inst_method()
-
-
-TestClass.some_method()
+print(type(list))

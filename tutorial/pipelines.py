@@ -6,7 +6,6 @@
 
 # useful for handling different item types with a single interface
 import logging
-from itemadapter import ItemAdapter
 from scrapy.exceptions import DropItem
 
 class LoggingHandler:
