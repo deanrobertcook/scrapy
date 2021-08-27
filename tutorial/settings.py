@@ -18,8 +18,8 @@ sentry_sdk.init(
     # We recommend adjusting this value in production.
     traces_sample_rate=1.0
 )
-if sys.argv[1] == 'crawl':
-    sentry_sdk.set_tag('spider', sys.argv[2])
+if (sys.argv[1] if len(sys.argv) > 1 else None) == 'crawl':
+ sentry_sdk.set_tag('spider', sys.argv[2])   
 
 BOT_NAME = 'tutorial'
 
