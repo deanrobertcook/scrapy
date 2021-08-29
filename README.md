@@ -71,6 +71,18 @@
     - scrapyd username and password
     - release version (for error logging)
 
+    Testing locally (works...)
+    ```
+    docker run -d \
+    -p 6800:6800 \
+    -v scrapyd:/scrapyd \
+    -v /usr/local/lib/python3.7/dist-packages \
+    deanrobertcook/quotes-scrapyd:latest
+    ```
+
+    **TODO:**
+        - I should probably not pass the password as a build-arg. Instead, store the password as an envvar on the server ahead of time, and reference it by variable name (i.e., close a password variable)
+
 3. Trigger redeploy of scrapyd server on droplet
 
 4. Set up a Github action that deploys the spiders to the authenticated scrapyd server

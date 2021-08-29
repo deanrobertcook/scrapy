@@ -11,12 +11,14 @@
 FROM ubuntu:18.04
 
 # Set "fixed" arguments to be envvars available to the scrapy instance
-# USERNAME and PASSWORD are needed to enable HTTP basic auth
+# USERNAME and PASSWORD are needed to enable HTTP basic auth (required)
 ARG USERNAME
-ENV USERNAME=${USERNAME}
+RUN test -n "$USERNAME"
+ENV USERNAME $USERNAME
 
 ARG PASSWORD
-ENV PASSWORD=${PASSWORD}
+RUN test -n "$PASSWORD"
+ENV PASSWORD $PASSWORD
 
 # Example of variable to be used by the app
 ARG RELEASE_VERSION
