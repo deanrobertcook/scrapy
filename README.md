@@ -66,11 +66,13 @@
 # Automatically deploy scrapyd and spiders to droplet on merge to master
 
 1. Set up a Github Action that builds the scrapyd image from the Dockerfile and pushes to Dockerhub
-    
-    This image could have environment and commit baked into it as environment variables. For this reason, it still makes sense to publish a new scrapyd server with any change to the spiders. This should be possible by adding ENV vars to the Dockerfile. 
 
-2. Trigger redeploy of scrapyd server on droplet
+2. Inject environment variables into the Dockerfile. 
+    - scrapyd username and password
+    - release version (for error logging)
 
-3. Set up a Github action that deploys the spiders to the authenticated scrapyd server
+3. Trigger redeploy of scrapyd server on droplet
 
-4. Run spider and test    
+4. Set up a Github action that deploys the spiders to the authenticated scrapyd server
+
+5. Run spider and test    
