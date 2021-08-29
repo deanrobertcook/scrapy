@@ -1,9 +1,5 @@
 # Create a docker image with scrapyd and get a spider running on it
 
-```
-git checkout scrapyd-docker
-```
-
 1. Create your own scrapyd docker image (see `scrapyd/Dockerfile`). Build it using:  
     ```
     docker build -t quotes-scrapyd -f scrapyd/Dockerfile .
@@ -28,9 +24,6 @@ git checkout scrapyd-docker
 5. Check the logs of the spider that just ran - visit `http://localhost:6800/` (or wherever you ran the container)
 
 # Run a secure scrapyd instance from a Digital Ocean Droplet
-```
-git checkout scrapyd-remote-deploy
-```
 1. Sign up for and create a droplet on digital ocean. Droplets come with Docker preinstalled
 2. Create an access token on Dockerhub - save it as a [secret](https://docs.github.com/en/actions/reference/encrypted-secrets). **Note**: the token is not stored on dockerhub, store it somewhere safe. On the free Dockerhub plan, you can also only have one.
 3. On the droplet, log into your dockerhub registry using: `docker login -u <dockerhub_username>` and provide the token when prompted
@@ -69,3 +62,15 @@ git checkout scrapyd-remote-deploy
     ```
 
 9. Check the job ran, this time navigating to: `http://<droplet_ip_here>:6800/`, authenticating as necessary
+
+# Automatically deploy scrapyd and spiders to droplet on merge to master
+
+1. Set up a Github Action that builds the scrapyd image from the Dockerfile and pushes to Dockerhub
+    
+    This image could have environment and commit baked into it as environment variables. For this reason, it still makes sense to publish a new scrapyd server with any change to the spiders. This should be possible by adding ENV vars to the Dockerfile. 
+
+2. Trigger redeploy of scrapyd server on droplet
+
+3. Set up a Github action that deploys the spiders to the authenticated scrapyd server
+
+4. Run spider and test    
