@@ -67,8 +67,8 @@ jobs:
             docker image rm -f ${{ steps.meta.outputs.tags }} || true 
             docker run -d -p 6800:6800 -e USERNAME=${{ secrets.SCRAPYD_DEPLOYER_USERNAME }} -e PASSWORD=${{ secrets.SCRAPYD_DEPLOYER_PW }} -v scrapyd:/scrapyd -v /usr/local/lib/python3.7/dist-packages ${{ steps.meta.outputs.tags }}
 
-      # - name: checkout repo content
-      #   uses: actions/checkout@v2 # checkout the repository content to github runner.
+      - name: checkout repo content
+        uses: actions/checkout@v2 # checkout the repository content to github runner.
       - name: setup python
         uses: actions/setup-python@v2
         with:
