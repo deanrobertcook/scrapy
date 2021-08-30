@@ -64,7 +64,7 @@ jobs:
                 fi
             done
             docker image rm -f deanrobertcook/quotes-scrapyd:master || true
-            docker run -d --name scrapyd -p 6800:6800 -v scrapyd:/scrapyd -v /usr/local/lib/python3.7/dist-packages deanrobertcook/quotes-scrapyd:master
+            docker run -d -p 6800:6800 -v scrapyd:/scrapyd -v /usr/local/lib/python3.7/dist-packages deanrobertcook/quotes-scrapyd:master
 
       # - name: checkout repo content
       #   uses: actions/checkout@v2 # checkout the repository content to github runner.
