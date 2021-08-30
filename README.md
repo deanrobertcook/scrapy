@@ -69,7 +69,7 @@
 
 2. Inject environment variables into the Dockerfile. 
     - scrapyd username and password
-    - release version (for error logging)
+    - release version and deployment environment (for error logging)
 
     Testing locally (works...):
 
@@ -89,12 +89,12 @@
 
     **TODO:**
     - I should probably not pass the password as a build-arg. Instead, store the password as an envvar on the server ahead of time, and reference it by variable name (i.e., close a password variable)
-    - How do I ensure that the droplet always pulls the latest image? 
 
-3. Trigger redeploy of scrapyd server on droplet
-    - Can I stop containers on the droplet by looking for the container that's bound to the port? That would save a lot of conflicts
-    - Should I only stop the containers or remove them? What if we want to look at logs? How much memory do they take up?
-    - Is it possible to always pull the image from a remote repository with the run command? 
+3. Trigger redeploy of scrapyd server on droplet. There are several things to watch for here:
+    - Reusing the port: since we keep the port consistent (6800), deployment will fail unless we stop the previous container. Rather than using names, we can look up the old container via the port number, and stop/remove it. See the workflow for how that was done.
+    - Memory usage: Should I only stop the containers or remove them? What if we want to look at logs? How much memory do they take up?
+    - Pulling the correct image: once the droplet Docker host has pulled an image with a certain tag, if we push an updated image to the container repo, the droplet host needs to find out about this. The easiest way is to rm and pull the image again.
+    - Deployment speed: deleting and refetching the image is a bit slow though. Is it possible to pull just the layers of the image that have changed? Pulling the Ubuntu base image every time is a bit slow for the build.
 
 4. Set up a Github action that deploys the spiders to the authenticated scrapyd server
     - inject username and password into `scrapy.cfg`
