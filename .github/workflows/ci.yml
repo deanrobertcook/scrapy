@@ -15,6 +15,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: deanrobertcook/quotes-scrapyd
+
       - name: Build and push scrapyd server
         id: docker_build
         uses: docker/build-push-action@v2
@@ -24,7 +30,7 @@ jobs:
             USERNAME=${{ secrets.SCRAPYD_DEPLOYER_USERNAME }}
             PASSWORD=${{ secrets.SCRAPYD_DEPLOYER_PW }}
           push: true
-          tags: deanrobertcook/quotes-scrapyd:latest
+          tags: ${{ steps.meta.outputs.tags }}
 
       - name: Run scrapyd on the droplet
         uses: appleboy/ssh-action@master
@@ -34,4 +40,4 @@ jobs:
           password: ${{ secrets.DROPLET_PASSWORD }}
           script: |
             docker rm -f scrapyd || true
-            docker run --name scrapyd -p 6800:6800 -v scrapyd:/scrapyd -v /usr/local/lib/python3.7/dist-packages deanrobertcook/quotes-scrapyd:latest
+            docker run --name scrapyd -p 6800:6800 -v scrapyd:/scrapyd -v /usr/local/lib/python3.7/dist-packages ${{ steps.meta.outputs.tags }}

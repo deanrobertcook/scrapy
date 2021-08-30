@@ -71,7 +71,14 @@
     - scrapyd username and password
     - release version (for error logging)
 
-    Testing locally (works...)
+    Testing locally (works...):
+
+    Build
+    ```
+    docker build --build-arg USERNAME=quotes-deployer --build-arg PASSWORD=<deployer_pw> -t deanrobertcook/quotes-scrapyd:ba1 -f scrapyd/Dockerfile .
+    ```
+
+    Run
     ```
     docker run -d \
     -p 6800:6800 \
@@ -81,10 +88,12 @@
     ```
 
     **TODO:**
-        - I should probably not pass the password as a build-arg. Instead, store the password as an envvar on the server ahead of time, and reference it by variable name (i.e., close a password variable)
+    - I should probably not pass the password as a build-arg. Instead, store the password as an envvar on the server ahead of time, and reference it by variable name (i.e., close a password variable)
+    - How do I ensure that the droplet always pulls the latest image? 
 
 3. Trigger redeploy of scrapyd server on droplet
 
 4. Set up a Github action that deploys the spiders to the authenticated scrapyd server
 
 5. Run spider and test    
+
