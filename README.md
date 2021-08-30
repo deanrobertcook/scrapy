@@ -92,6 +92,9 @@
     - How do I ensure that the droplet always pulls the latest image? 
 
 3. Trigger redeploy of scrapyd server on droplet
+    - Can I stop containers on the droplet by looking for the container that's bound to the port? That would save a lot of conflicts
+    - Should I only stop the containers or remove them? What if we want to look at logs? How much memory do they take up?
+    - Is it possible to always pull the image from a remote repository with the run command? 
 
 4. Set up a Github action that deploys the spiders to the authenticated scrapyd server
 

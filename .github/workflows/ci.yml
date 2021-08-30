@@ -52,6 +52,10 @@ jobs:
           host: ${{ secrets.DROPLET_HOST }}
           username: ${{ secrets.DROPLET_USERNAME }}
           password: ${{ secrets.DROPLET_PASSWORD }}
+          # Removing the image is a bit of a hack, since the droplet's Docker can't know if a locally
+          # stored image is out of date from latest version on the Dockerhub repo. Just remove and 
+          # re-download for now. 
           script: |
             docker rm -f scrapyd || true
+            docker image rm -f ${{ steps.meta.outputs.tags }} || true
             docker run --name scrapyd -p 6800:6800 -v scrapyd:/scrapyd -v /usr/local/lib/python3.7/dist-packages ${{ steps.meta.outputs.tags }}
