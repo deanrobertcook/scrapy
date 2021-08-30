@@ -39,8 +39,6 @@ jobs:
         with:
           file: scrapyd/Dockerfile
           build-args: |
-            USERNAME=${{ secrets.SCRAPYD_DEPLOYER_USERNAME }}
-            PASSWORD=${{ secrets.SCRAPYD_DEPLOYER_PW }}
             RELEASE_VERSION=${{ steps.vars.outputs.sha_short }}
             ENVIRONMENT=${{ steps.vars.outputs.branch }}
           push: true
@@ -64,7 +62,12 @@ jobs:
                 fi
             done
             docker image rm -f ${{ steps.meta.outputs.tags }} || true
-            docker run -d -p 6800:6800 -v scrapyd:/scrapyd -v /usr/local/lib/python3.7/dist-packages ${{ steps.meta.outputs.tags }}
+            docker run -d -p 6800:6800 \ 
+              -e USERNAME=${{ secrets.SCRAPYD_DEPLOYER_USERNAME }} \ 
+              -e PASSWORD=${{ secrets.SCRAPYD_DEPLOYER_PW }}
+              -v scrapyd:/scrapyd \ 
+              -v /usr/local/lib/python3.7/dist-packages \ 
+              ${{ steps.meta.outputs.tags }}
 
       # - name: checkout repo content
       #   uses: actions/checkout@v2 # checkout the repository content to github runner.
