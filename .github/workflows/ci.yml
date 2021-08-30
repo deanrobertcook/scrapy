@@ -9,59 +9,59 @@ jobs:
   scrapyd_image:
     runs-on: ubuntu-latest
     steps:
-      # - name: Login to DockerHub
-      #   uses: docker/login-action@v1 
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+      - name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
-      # - name: Extract metadata (tags, labels) for Docker
-      #   id: meta
-      #   uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-      #   with:
-      #     images: deanrobertcook/quotes-scrapyd
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: deanrobertcook/quotes-scrapyd
 
-      # # We could use these variables to build the docker tag ourselves, but 
-      # # I'll leave both steps here for now as a demonstration
-      # # TODO: It'd be worth learning more about Go templates to add a bit of logic
-      # # e.g. ${{ if steps.vars.outputs.branch == 'master' 'prod' else 'staging' }}, if that's
-      # # possible. 
-      # - name: Declare build variables to be passed
-      #   id: vars
-      #   shell: bash
-      #   run: |
-      #     echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-      #     echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+      # We could use these variables to build the docker tag ourselves, but 
+      # I'll leave both steps here for now as a demonstration
+      # TODO: It'd be worth learning more about Go templates to add a bit of logic
+      # e.g. ${{ if steps.vars.outputs.branch == 'master' 'prod' else 'staging' }}, if that's
+      # possible. 
+      - name: Declare build variables to be passed
+        id: vars
+        shell: bash
+        run: |
+          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
-      # - name: Build and push scrapyd server
-      #   id: docker_build
-      #   uses: docker/build-push-action@v2
-      #   with:
-      #     file: scrapyd/Dockerfile
-      #     build-args: |
-      #       USERNAME=${{ secrets.SCRAPYD_DEPLOYER_USERNAME }}
-      #       PASSWORD=${{ secrets.SCRAPYD_DEPLOYER_PW }}
-      #       RELEASE_VERSION=${{ steps.vars.outputs.sha_short }}
-      #       ENVIRONMENT=${{ steps.vars.outputs.branch }}
-      #     push: true
-      #     tags: ${{ steps.meta.outputs.tags }}
+      - name: Build and push scrapyd server
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          file: scrapyd/Dockerfile
+          build-args: |
+            USERNAME=${{ secrets.SCRAPYD_DEPLOYER_USERNAME }}
+            PASSWORD=${{ secrets.SCRAPYD_DEPLOYER_PW }}
+            RELEASE_VERSION=${{ steps.vars.outputs.sha_short }}
+            ENVIRONMENT=${{ steps.vars.outputs.branch }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
 
-      # - name: Run scrapyd on the droplet
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ${{ secrets.DROPLET_HOST }}
-      #     username: ${{ secrets.DROPLET_USERNAME }}
-      #     password: ${{ secrets.DROPLET_PASSWORD }}
-      #     # Removing the image is a bit of a hack, since the droplet's Docker can't know if a locally
-      #     # stored image is out of date from latest version on the Dockerhub repo. Just remove and 
-      #     # re-download for now. 
-      #     script: |
-      #       docker rm -f scrapyd || true
-      #       docker image rm -f ${{ steps.meta.outputs.tags }} || true
-      #       docker run -d --name scrapyd -p 6800:6800 -v scrapyd:/scrapyd -v /usr/local/lib/python3.7/dist-packages ${{ steps.meta.outputs.tags }}
+      - name: Run scrapyd on the droplet
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_USERNAME }}
+          password: ${{ secrets.DROPLET_PASSWORD }}
+          # Removing the image is a bit of a hack, since the droplet's Docker can't know if a locally
+          # stored image is out of date from latest version on the Dockerhub repo. Just remove and 
+          # re-download for now. 
+          script: |
+            docker rm -f scrapyd || true
+            docker image rm -f ${{ steps.meta.outputs.tags }} || true
+            docker run -d --name scrapyd -p 6800:6800 -v scrapyd:/scrapyd -v /usr/local/lib/python3.7/dist-packages ${{ steps.meta.outputs.tags }}
 
-      - name: checkout repo content
-        uses: actions/checkout@v2 # checkout the repository content to github runner.
+      # - name: checkout repo content
+      #   uses: actions/checkout@v2 # checkout the repository content to github runner.
       - name: setup python
         uses: actions/setup-python@v2
         with:

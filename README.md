@@ -97,6 +97,9 @@
     - Is it possible to always pull the image from a remote repository with the run command? 
 
 4. Set up a Github action that deploys the spiders to the authenticated scrapyd server
+    - inject username and password into `scrapy.cfg`
+    - install scrapy and scrapyd-client
+    - run scrapyd-deploy
 
-5. Run spider and test    
+5. Run spider and test (see last tutorial)  
 
