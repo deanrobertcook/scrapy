@@ -7,11 +7,17 @@
 # For some reason I've yet to understand, the scrapyd server
 # needs to have all the dependencies of the spiders installed.
 # I have no idea what the deploy step does then...
+
 FROM python:3.8-slim
 
 RUN apt-get update -qq \
     && apt-get -y upgrade \
-    && apt-get install --no-install-recommends -y git
+    && apt-get install --no-install-recommends -y \ 
+       git \
+       nginx \ 
+       apache2-utils \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 #Fixes a lot of issues further down the line
 RUN pip3 install --upgrade pip
