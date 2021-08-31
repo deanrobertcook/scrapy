@@ -47,7 +47,7 @@ ENTRYPOINT ["/usr/local/bin/chaperone"]
 # Example of variable to be used by the app
 # Should go at the end to make best use of the build cache
 ARG RELEASE_VERSION
-ENV RELEASE_VERSION=${RELEASE_VERSION:-latest}
+ENV RELEASE_VERSION=${RELEASE_VERSION:-nightly}
 
 ARG ENVIRONMENT
 ENV ENVIRONMENT=${ENVIRONMENT:-local}
