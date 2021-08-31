@@ -9,6 +9,13 @@ jobs:
   scrapyd_image:
     runs-on: ubuntu-latest
     steps:
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: checkout repo content
+        uses: actions/checkout@v2 
+
       - name: Login to DockerHub
         uses: docker/login-action@v1 
         with:
@@ -67,8 +74,6 @@ jobs:
             docker image rm -f ${{ steps.meta.outputs.tags }} || true 
             docker run -d -p 6800:6800 -e USERNAME=${{ secrets.SCRAPYD_DEPLOYER_USERNAME }} -e PASSWORD=${{ secrets.SCRAPYD_DEPLOYER_PW }} -v scrapyd:/scrapyd -v /usr/local/lib/python3.7/dist-packages ${{ steps.meta.outputs.tags }}
 
-      - name: checkout repo content
-        uses: actions/checkout@v2 # checkout the repository content to github runner.
       - name: setup python
         uses: actions/setup-python@v2
         with:
