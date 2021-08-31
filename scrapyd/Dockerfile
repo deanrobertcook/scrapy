@@ -7,31 +7,11 @@
 # For some reason I've yet to understand, the scrapyd server
 # needs to have all the dependencies of the spiders installed.
 # I have no idea what the deploy step does then...
+FROM python:3.8-slim
 
-FROM ubuntu:18.04
-
-# Example of variable to be used by the app
-ARG RELEASE_VERSION
-ENV RELEASE_VERSION=${RELEASE_VERSION:-latest}
-
-ARG ENVIRONMENT
-ENV ENVIRONMENT=${ENVIRONMENT:-local}
-
-# install Ubuntu packages
-ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -qq \
- && apt-get -y upgrade \
- && apt-get install --no-install-recommends -y \
-    git net-tools \
-    # python3 support
-    python3 python3-pip python3-setuptools \
-    # scrapy dependencies
-    build-essential python3-dev \
-    libxml2-dev libxslt1-dev zlib1g-dev libffi-dev libssl-dev \
-    # nginx and htpasswd
-    nginx apache2-utils \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
+    && apt-get -y upgrade \
+    && apt-get install --no-install-recommends -y git
 
 #Fixes a lot of issues further down the line
 RUN pip3 install --upgrade pip
@@ -57,4 +37,12 @@ VOLUME /scrapyd
 EXPOSE 6800
 
 ENTRYPOINT ["/usr/local/bin/chaperone"]
+
+# Example of variable to be used by the app
+# Should go at the end to make best use of the build cache
+ARG RELEASE_VERSION
+ENV RELEASE_VERSION=${RELEASE_VERSION:-latest}
+
+ARG ENVIRONMENT
+ENV ENVIRONMENT=${ENVIRONMENT:-local}
 
