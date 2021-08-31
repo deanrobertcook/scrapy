@@ -84,7 +84,7 @@ jobs:
       - name: Cache scrapyd-deploy tool pip dependencies
         uses: actions/cache@v2
         with:
-          path: ~/.cache/pip
+          path: ${{ env.pythonLocation }}
           key: scrapyd-deploy-1.2.0a1
 
       - name: Deploy spiders
@@ -92,5 +92,5 @@ jobs:
           sed -i 's/secrets.SCRAPYD_DEPLOYER_USERNAME/${{ secrets.SCRAPYD_DEPLOYER_USERNAME }}/g' scrapy.cfg
           sed -i 's/secrets.SCRAPYD_DEPLOYER_PW/${{ secrets.SCRAPYD_DEPLOYER_PW }}/g' scrapy.cfg
           python -m pip install --upgrade pip
-          pip install --upgrade --upgrade-strategy eager scrapy==2.4.0 scrapyd-client==1.2.0a1 -e .
+          pip install scrapy==2.4.0 scrapyd-client==1.2.0a1 -e .
           scrapyd-deploy
