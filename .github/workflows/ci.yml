@@ -50,6 +50,8 @@ jobs:
             ENVIRONMENT=${{ steps.vars.outputs.branch }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=registry,ref=deanrobertcook/quotes-scrapyd:buildcache
+          cache-to: type=registry,ref=deanrobertcook/quotes-scrapyd:buildcache,mode=max
 
       - name: Run scrapyd on the droplet
         uses: appleboy/ssh-action@master
