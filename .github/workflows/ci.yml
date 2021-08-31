@@ -81,10 +81,11 @@ jobs:
         with:
           python-version: 3.8 
 
-      - uses: actions/cache@v2
-      with:
-        path: ~/.cache/pip
-        key: scrapyd-deploy-1.2.0a1
+      - name: Cache scrapyd-deploy tool pip dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: scrapyd-deploy-1.2.0a1
 
       - name: Deploy spiders
         run: |
