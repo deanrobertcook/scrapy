@@ -53,38 +53,38 @@ jobs:
           cache-from: type=registry,ref=deanrobertcook/quotes-scrapyd:buildcache
           cache-to: type=registry,ref=deanrobertcook/quotes-scrapyd:buildcache,mode=max
 
-      # - name: Run scrapyd on the droplet
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ${{ secrets.DROPLET_HOST }}
-      #     username: ${{ secrets.DROPLET_USERNAME }}
-      #     password: ${{ secrets.DROPLET_PASSWORD }}
-      #     # Removing the image is a bit of a hack, since the droplet's Docker can't know if a locally
-      #     # stored image is out of date from latest version on the Dockerhub repo. Just remove and 
-      #     # re-download for now. 
-      #     # 
-      #     # I can't for the life of me figure out how multiline commands work here. 
-      #     # It should work: https://github.com/appleboy/ssh-action/issues/75
-      #     script: |
-      #       for id in $(docker ps -q)
-      #       do
-      #           if [[ $(docker port "${id}") == *"6800"* ]]; then
-      #               echo "stopping container ${id}"
-      #               docker stop "${id}"
-      #           fi
-      #       done
-      #       docker image rm -f ${{ steps.meta.outputs.tags }} || true 
-      #       docker run -d -p 6800:6800 -e USERNAME=${{ secrets.SCRAPYD_DEPLOYER_USERNAME }} -e PASSWORD=${{ secrets.SCRAPYD_DEPLOYER_PW }} -v scrapyd:/scrapyd -v /usr/local/lib/python3.7/dist-packages ${{ steps.meta.outputs.tags }}
+      - name: Run scrapyd on the droplet
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_USERNAME }}
+          password: ${{ secrets.DROPLET_PASSWORD }}
+          # Removing the image is a bit of a hack, since the droplet's Docker can't know if a locally
+          # stored image is out of date from latest version on the Dockerhub repo. Just remove and 
+          # re-download for now. 
+          # 
+          # I can't for the life of me figure out how multiline commands work here. 
+          # It should work: https://github.com/appleboy/ssh-action/issues/75
+          script: |
+            docker pull ${{ steps.meta.outputs.tags }}
+            for id in $(docker ps -q)
+            do
+                if [[ $(docker port "${id}") == *"6800"* ]]; then
+                    echo "stopping container ${id}"
+                    docker stop "${id}"
+                fi
+            done
+            docker run -d -p 6800:6800 -e USERNAME=${{ secrets.SCRAPYD_DEPLOYER_USERNAME }} -e PASSWORD=${{ secrets.SCRAPYD_DEPLOYER_PW }} -v scrapyd:/scrapyd -v /usr/local/lib/python3.7/dist-packages ${{ steps.meta.outputs.tags }}
 
-      # - name: setup python
-      #   uses: actions/setup-python@v2
-      #   with:
-      #     python-version: 3.8 #install the python needed
-      # - name: Deploy spiders
-      #   run: |
-      #     sed -i 's/secrets.SCRAPYD_DEPLOYER_USERNAME/${{ secrets.SCRAPYD_DEPLOYER_USERNAME }}/g' scrapy.cfg
-      #     sed -i 's/secrets.SCRAPYD_DEPLOYER_PW/${{ secrets.SCRAPYD_DEPLOYER_PW }}/g' scrapy.cfg
-      #     python -m pip install --upgrade pip
-      #     pip install scrapy==2.4.0
-      #     pip install scrapyd-client==1.2.0a1
-      #     scrapyd-deploy
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8 #install the python needed
+      - name: Deploy spiders
+        run: |
+          sed -i 's/secrets.SCRAPYD_DEPLOYER_USERNAME/${{ secrets.SCRAPYD_DEPLOYER_USERNAME }}/g' scrapy.cfg
+          sed -i 's/secrets.SCRAPYD_DEPLOYER_PW/${{ secrets.SCRAPYD_DEPLOYER_PW }}/g' scrapy.cfg
+          python -m pip install --upgrade pip
+          pip install scrapy==2.4.0
+          pip install scrapyd-client==1.2.0a1
+          scrapyd-deploy
