@@ -79,12 +79,17 @@ jobs:
       - name: setup python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8 #install the python needed
+          python-version: 3.8 
+
+      - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: scrapyd-deploy-1.2.0a1
+
       - name: Deploy spiders
         run: |
           sed -i 's/secrets.SCRAPYD_DEPLOYER_USERNAME/${{ secrets.SCRAPYD_DEPLOYER_USERNAME }}/g' scrapy.cfg
           sed -i 's/secrets.SCRAPYD_DEPLOYER_PW/${{ secrets.SCRAPYD_DEPLOYER_PW }}/g' scrapy.cfg
           python -m pip install --upgrade pip
-          pip install scrapy==2.4.0
-          pip install scrapyd-client==1.2.0a1
+          pip install --upgrade --upgrade-strategy eager scrapy==2.4.0 scrapyd-client==1.2.0a1 -e .
           scrapyd-deploy
