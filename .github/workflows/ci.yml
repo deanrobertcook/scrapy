@@ -74,7 +74,7 @@ jobs:
                     docker stop "${id}"
                 fi
             done
-            docker run -d -p 6800:6800 -e USERNAME=${{ secrets.SCRAPYD_DEPLOYER_USERNAME }} -e PASSWORD=${{ secrets.SCRAPYD_DEPLOYER_PW }} -v scrapyd:/scrapyd -v /usr/local/lib/python3.7/dist-packages ${{ steps.meta.outputs.tags }}
+            docker run -d --restart unless-stopped -p 6800:6800 -e USERNAME=${{ secrets.SCRAPYD_DEPLOYER_USERNAME }} -e PASSWORD=${{ secrets.SCRAPYD_DEPLOYER_PW }} -v scrapyd:/scrapyd -v /usr/local/lib/python3.7/dist-packages ${{ steps.meta.outputs.tags }}
 
       - name: setup python
         uses: actions/setup-python@v2
